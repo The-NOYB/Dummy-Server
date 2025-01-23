@@ -1,55 +1,53 @@
 import socket
-from _thread import *
-from player import Player
 import pickle
+import threading
+from player import Player
 
-server = "10.11.250.207"
-port = 5555
+host = '127.0.0.1'
+port = 7776
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
+server.bind( (host, port) )
+server.listen()
 
-try:
-    s.bind((server, port))
-except socket.error as e:
-    str(e)
+connected_clients = []  # list of all connected clients
+connected_objects = []  # list of all player objects
+other_objects = []      # other objects which are not dependent on clients
 
-s.listen(2)
-print("Waiting for a connection, Server Started")
+# sending the changes to the clients/players
+def broadcast():
+    pass
 
-
-players = [Player(0,0,50,50,(255,0,0)), Player(100,100, 50,50, (0,0,255))]
-
-def threaded_client(conn, player):
-    conn.send(pickle.dumps(players[player]))
-    reply = ""
+# function for updating the changes on server
+def update_local(client):
     while True:
         try:
-            data = pickle.loads(conn.recv(2048))
-            players[player] = data
-
-            if not data:
-                print("Disconnected")
-                break
-            else:
-                if player == 1:
-                    reply = players[0]
-                else:
-                    reply = players[1]
-
-                print("Received: ", data)
-                print("Sending : ", reply)
-
-            conn.sendall(pickle.dumps(reply))
+            received_info = client.recv(2048)
+            received_obj = pickle.loads(info)
         except:
+            index = connected_clients.index(client) 
+            print(f"{connected_objects[index].name} has disconnected to the server")
+            connected_clients.pop( index )
+            connected_objects.pop( index )
+            client.close() 
             break
 
-    print("Lost connection")
-    conn.close()
+def main():
+    while True:
+        client, address = server.accept()
+        player_object = pickle.loads(client.recv(2048))
 
-currentPlayer = 0
-while True:
-    conn, addr = s.accept()
-    print("Connected to:", addr)
+        # this was for getting the player object initially
+#        client.send( "OBJ".encode('ascii') )
 
-    start_new_thread(threaded_client, (conn, currentPlayer))
-    currentPlayer += 1
+        connected_clients.append(client)
+        connected_objects.append(player_object)
+
+        print(f"{player_object.name} has connected to the server with {address = }")
+        # will work on this later
+#        client.send( "You're now connected to the server".encode('ascii') )
+
+        thread = threading.Thread( target=update_local, args=(client, ) )
+        thread.start()
+
+main()

@@ -1,36 +1,31 @@
-import pygame
-from network import Network
-from player import Player
-
-width = 500
-height = 500
-win = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Client")
+import socket
+import threading
+import pickle
 
 
-def redrawWindow(win,player, player2):
-    win.fill((255,255,255))
-    player.draw(win)
-    player2.draw(win)
-    pygame.display.update()
-
-
-def main():
-    run = True
-    n = Network()
-    p = n.getP()
-    clock = pygame.time.Clock()
-
-    while run:
-        clock.tick(60)
-        p2 = n.send(p)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                pygame.quit()
-
-        p.move()
-        redrawWindow(win, p, p2)
-
-main()
+class Network():
+    def __init__(self):
+        self.client = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
+        self.host, self.port=  ('127.0.0.1',7776)
+        
+    # function will execute when client is launched and send the information of player on 1st connect
+    def connect( self, player_obj ):
+        try:
+            self.client.connect( (self.host, self.port) )
+            self.client.send( pickle.dumps(player_obj) )
+        except socket.error as e:
+            print(e)
+        
+    # fucntion will receive the data abotu all the other players
+    def receive(self):
+        try:
+            pickle.loads( self.client.recv(2048) )
+        except socket.error as e:
+            print(e)
+    
+    # function will send data of player to the game
+    def send(self):
+        try:
+            self.client.send( pickel.dumps(player_obj) )
+        except socket.error as e:
+            print(e)
