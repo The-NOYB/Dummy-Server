@@ -1,22 +1,6 @@
 import pygame
 from client import Network
-
-class Player():
-    def __init__(self, x, y):
-        self.x, self.y = x, y
-
-    def update(self, keys):
-        if keys[pygame.K_w]:
-            self.y -= 1
-        if keys[pygame.K_a]:
-            self.x -= 1
-        if keys[pygame.K_s]:
-            self.y += 1
-        if keys[pygame.K_d]:
-            self.x += 1
-    
-    def C(self):
-        pass
+from player import Player
 
 
 def init( ):
@@ -29,10 +13,12 @@ def init( ):
 def main( player ):
     clock, window = init()
     keys = pygame.key.get_pressed()
-    player.update()
+    player.update(keys)
+    connection_to_server = Network()
+    connection_to_server.connect( player )
 
     while True:
-       window.fill( (0,200,200) )
+       window.fill( (0,150,150) )
        for event in pygame.event.get():
            if event.type == pygame.QUIT:
                pygame.quit()
@@ -44,5 +30,6 @@ def main( player ):
 if __name__ == "__main__":
     pygame.init()
     x, y = ( map( int, input("Give the x and y for the player: ").split() ) )
-    player = Player(x, y)
+    name = input("Give name for the player: ")
+    player = Player(name, x, y)
     main( player )

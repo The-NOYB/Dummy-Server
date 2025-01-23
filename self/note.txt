@@ -1,3 +1,4 @@
--make a separate network class for the client
--instead of getting the name in loop get it during the first connect function
--
+-make a separate network class for the client [DONE]
+-instead of getting the name in loop get it during the first connect function [DONE]
+-just need to make the visible
+-work on constant feeback to server
