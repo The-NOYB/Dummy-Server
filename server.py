@@ -22,7 +22,7 @@ def broadcast():
 def update_local(client):
     while True:
         try:
-            received_info = client.recv(2048)
+            received_info = client.recv(2048*2)
             received_obj = pickle.loads(info)
         except:
             index = connected_clients.index(client) 
@@ -35,7 +35,7 @@ def update_local(client):
 def main():
     while True:
         client, address = server.accept()
-        player_object = pickle.loads(client.recv(2048))
+        player_object = pickle.loads(client.recv(2048*2))
 
         # this was for getting the player object initially
 #        client.send( "OBJ".encode('ascii') )

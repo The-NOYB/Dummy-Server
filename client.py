@@ -19,7 +19,7 @@ class Network():
     # fucntion will receive the data abotu all the other players
     def receive(self):
         try:
-            pickle.loads( self.client.recv(2048) )
+            pickle.loads( self.client.recv(2048*2) )
         except socket.error as e:
             print(e)
     
