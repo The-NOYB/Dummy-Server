@@ -1,6 +1,6 @@
 import pygame
 from client import Network
-from player import Player
+from player import Player, Player_data
 
 
 def init( ):
@@ -10,20 +10,26 @@ def init( ):
 
     return clock, window
 
-def main( player ):
+def main( local_player, local_player_data ):
     clock, window = init()
-    group = pygame.sprite.Group()
-    group.add( player )
+
+    local_group = pygame.sprite.Group()     # for local entities
+    online_group = pygame.sprite.Group()    # for online players
+
+    local_group.add( local_player )
     connection_to_server = Network()
-    connection_to_server.connect( player )
+    connection_to_server.connect( local_player_data )
 
     while True:
         window.fill( (0,150,150) )
         keys = pygame.key.get_pressed()
 
-        group.update( keys )
-        group.draw( window )
+        local_group.update( keys )
+        local_player_data.update(local_player) # updating the player data
+        local_group.draw( window )
 
+        print( local_player.rect, local_player_data.rect )
+                
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -36,5 +42,8 @@ if __name__ == "__main__":
     pygame.init()
     x, y = ( map( int, input("Give the x and y for the player: ").split() ) )
     name = input("Give name for the player: ")
-    player = Player(name, x, y)
-    main( player )
+
+    local_player = Player(name, x, y)
+    local_player_data = Player_data(name, local_player.rect)
+
+    main( local_player, local_player_date)

@@ -1,6 +1,6 @@
 -make a separate network class for the client [DONE]
 -instead of getting the name in loop get it during the first connect function [DONE]
--just need to make the player visible
+-just need to make the player visible [DONE]
 -work on constant feeback to server
 
 so you can't use sprite as sendable objects
