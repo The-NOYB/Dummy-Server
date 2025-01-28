@@ -4,7 +4,7 @@ import threading
 from player import Player
 
 host = '127.0.0.1'
-port = 7776
+port = 7777
 
 server = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
 server.bind( (host, port) )
@@ -22,8 +22,8 @@ def broadcast():
 def update_local(client):
     while True:
         try:
-            received_info = client.recv(2048*2)
-            received_obj = pickle.loads(info)
+            received_obj = pickle.loads( client.recv(2048*2) )
+            client.send( pickle.dumps(connected_objects) )
         except:
             index = connected_clients.index(client) 
             print(f"{connected_objects[index].name} has disconnected to the server")

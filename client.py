@@ -19,13 +19,14 @@ class Network():
     # fucntion will receive the data abotu all the other players
     def receive(self):
         try:
-            pickle.loads( self.client.recv(2048*2) )
+            return pickle.loads( self.client.recv(2048*2) )
         except socket.error as e:
             print(e)
     
     # function will send data of player to the game
-    def send(self):
+    def send(self, player_obj):
         try:
-            self.client.send( pickel.dumps(player_obj) )
+            self.client.send( pickle.dumps(player_obj) )
+            self.receive()      # receiving the list of all players
         except socket.error as e:
             print(e)

@@ -4,3 +4,4 @@
 -work on constant feeback to server
 
 so you can't use sprite as sendable objects
+look up slots/dictionaries for efficient trasnfer of data
