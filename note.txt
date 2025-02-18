@@ -5,3 +5,7 @@
 
 so you can't use sprite as sendable objects
 look up slots/dictionaries for efficient trasnfer of data
+worked on a way to update sprites online and locally but isnt working
+
+-client constatly takes players and updates them locally
+-server maintains list of what all players are there in the server and gives that list to players

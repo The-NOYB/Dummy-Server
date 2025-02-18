@@ -1,7 +1,7 @@
 import socket
 import pickle
 import threading
-from player import Player
+from player import Player_data
 
 host = '127.0.0.1'
 port = 7777
@@ -15,24 +15,30 @@ connected_objects = []  # list of all player objects
 other_objects = []      # other objects which are not dependent on clients
 
 # sending the changes to the clients/players
-def broadcast():
-    pass
+def edit_obj(connected_objects, received_obj):
+    for obj in connected_objects:
+        if obj.name == received_obj.name:
+            obj.update( received_obj )
 
 # function for updating the changes on server
-def update_local(client):
+def update(client, connected_clients, connected_objects):
     while True:
         try:
+            index = connected_clients.index(client) 
             received_obj = pickle.loads( client.recv(2048*2) )
             client.send( pickle.dumps(connected_objects) )
+            edit_obj( connected_objects, received_obj)
         except:
-            index = connected_clients.index(client) 
             print(f"{connected_objects[index].name} has disconnected to the server")
             connected_clients.pop( index )
             connected_objects.pop( index )
+            print( connected_clients, connected_objects)
             client.close() 
             break
 
 def main():
+    print("Server has started")
+
     while True:
         client, address = server.accept()
         player_object = pickle.loads(client.recv(2048*2))
@@ -47,7 +53,7 @@ def main():
         # will work on this later
 #        client.send( "You're now connected to the server".encode('ascii') )
 
-        thread = threading.Thread( target=update_local, args=(client, ) )
+        thread = threading.Thread( target=update, args=(client, connected_clients, connected_objects,) )
         thread.start()
 
 main()

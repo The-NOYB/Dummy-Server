@@ -5,7 +5,10 @@ class Player_data():
     def __init__(self, name, rect):
         self.name = name
         self.rect = rect
+        self.x = rect.x
+        self.y = rect.y
 
+    # updating the data object along the sprite
     def update(self, player):
         self.rect = player.rect
         self.x = player.x
@@ -23,6 +26,11 @@ class Player(pygame.sprite.Sprite):
         self.x, self.y = x, y
         self.rect.x, self.rect.y = self.x, self.y
 
+    def update_pos(self, x, y):
+        self.x, self.y = x, y
+        self.rect.x, self.rect.y = self.x, self.y
+        print( "update_pos", self.x, self.y)
+        
     def update(self, keys):
         if keys[pygame.K_w]:
             self.y -= 1
